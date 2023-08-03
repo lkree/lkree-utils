@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "paths": {
+      "~/*": ["src/*"],
+      "test/*": ["test/*"]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "sourceMap": false,
+    "inlineSourceMap": false,
+    "declaration": true,
+    "types": ["jest"]
+  },
+  "include": [
+    "src/**/*",
+    "test/",
+  ],
+  "exclude": [
+    "node_modules",
+    ".idea",
+    "dist",
+    "build",
+  ]
+}

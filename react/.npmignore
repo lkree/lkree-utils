@@ -1,0 +1,6 @@
+*
+!package.json
+!lib/*
+
+# For correct installation
+!tools/postinstall.sh

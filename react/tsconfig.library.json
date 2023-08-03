@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "isolatedModules": false,
+    "outFile": "./build/index.d.ts"
+  },
+  "files": [
+    "src/shared/api/index.ts",
+  ],
+}

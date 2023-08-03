@@ -1,0 +1,25 @@
+{
+  "bracketSpacing": true,
+  "singleQuote": true,
+  "semi": true,
+  "filepath": "src",
+  "trailingComma": "es5",
+  "arrowParens": "avoid",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^(react|react-dom)*$",
+    "<THIRD_PARTY_MODULES>",
+    "test/.*",
+    "bloko.*",
+    "~/app.*",
+    "~/entities.*",
+    "^(?!.+less$)\\~\\/shared.*",
+    "^(?!.+less$)^[.]{2}[\\/].*",
+    "^(?!.+less$)^[.]{1}[\\/].*",
+    "~\\/.*.less$",
+    "^[.]{2}[\\/].*\\.less$",
+    "^[.]{1}[\\/].*\\.less$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderCaseInsensitive": true
+}
