@@ -21,6 +21,8 @@ export const useQueue = <T>(): Queue<T> => {
       push: (item: T) => setQueue(queue => [...queue, item]),
       shift: () =>
         setQueue(queue => {
+          if (!queue.length) return queue;
+
           queue.shift();
 
           return [...queue];

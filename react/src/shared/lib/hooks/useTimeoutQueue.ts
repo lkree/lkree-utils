@@ -19,9 +19,9 @@ export const useTimeoutQueue = <T>(
   useLayoutEffect(() => {
     if (isShowing.current || queue.isEmpty()) return;
 
-    onEffectRef.current();
-
     isShowing.current = true;
+
+    onEffectRef.current();
 
     setTimeout(() => {
       onTimeoutRef.current();

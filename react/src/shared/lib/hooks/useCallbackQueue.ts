@@ -1,21 +1,11 @@
-import { useLayoutEffect, useRef } from 'react';
+import type { Noop } from 'lkree-common-utils/ts';
 
-import type { Noop, Nullable } from 'lkree-common-utils/ts';
+import { Queue } from '~/shared/lib/hooks/useQueue';
 
 import { useTimeoutQueue } from './useTimeoutQueue';
 
 export const useCallbackQueue = <T extends Noop = Noop>(updateTime: number) => {
-  const invokingCallback = useRef<Nullable<T>>(null);
-  const queue = useTimeoutQueue<T>(updateTime);
-
-  useLayoutEffect(() => {
-    const currentCallback = queue.get();
-
-    if (currentCallback && currentCallback !== invokingCallback.current) {
-      invokingCallback.current = currentCallback;
-      invokingCallback.current();
-    }
-  }, [queue]);
+  const queue: Queue<T> = useTimeoutQueue<T>(updateTime, () => queue.get()?.());
 
   return queue;
 };
