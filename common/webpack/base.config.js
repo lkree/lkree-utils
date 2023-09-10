@@ -29,7 +29,7 @@ module.exports = ({ modeEnv, entry, webpackAliases, outputPath, ...rest }) => ({
     },
     output: {
         library: {
-            type: 'module',
+            type: 'commonjs-static',
         },
         path: outputPath,
         filename: 'index.js',
