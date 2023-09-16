@@ -39,7 +39,11 @@ const computeOptions = (options?: Props['options']) =>
         ...(options.headers && { headers: computeHeadersObject(options.headers) }),
       };
 
-export const call = <T>({ options, resultType = 'json', url }: Props): Promise<ToCamelCase<T>> =>
-  fetch(url, computeOptions(options))
-    .then(d => d[resultType]())
-    .then(r => (isObject(r) || isArray(r) ? toCamelCase(r) : r));
+export const createCall =
+  (fetchInstance: typeof fetch) =>
+  <T>({ options, resultType = 'json', url }: Props): Promise<ToCamelCase<T>> =>
+    fetchInstance(url, computeOptions(options))
+      .then(d => d[resultType]())
+      .then(r => (isObject(r) || isArray(r) ? toCamelCase(r) : r));
+
+export const call = createCall(fetch);
