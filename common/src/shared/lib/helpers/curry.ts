@@ -26,9 +26,11 @@ type Curry<P extends Array<any>, R> = <T extends Array<any>>(
 ) => Drop<Length<T>, P> extends [any, ...Array<any>] ? Curry<Cast<Drop<Length<T>, P>, Array<any>>, R> : R;
 
 export function curry<P extends Array<any>, R>(fn: (...args: P) => R) {
-  return ((...args: Array<any>) => {
-    if (args.length >= fn.length) return (fn as AnyFunction)(...args) as R;
+  return function <T>(this: T, ...args: Array<any>) {
+    if (args.length >= fn.length) return (fn as AnyFunction).apply(this, args) as R;
 
-    return (...more: Array<any>) => (curry(fn) as AnyFunction)(...args, ...more);
-  }) as unknown as Curry<P, R>;
+    return function <K>(this: K, ...more: Array<any>) {
+      return (curry(fn) as AnyFunction).apply(this, [...args, ...more]);
+    };
+  } as unknown as Curry<P, R>;
 }
