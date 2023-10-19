@@ -40,10 +40,22 @@ const computeOptions = (options?: Props['options']) =>
       };
 
 export const createCall =
-  (fetchInstance: typeof fetch) =>
-  <T>({ options, resultType = 'json', url }: Props): Promise<ToCamelCase<T>> =>
-    fetchInstance(url, computeOptions(options))
-      .then(d => d[resultType]())
-      .then(r => (isObject(r) || isArray(r) ? toCamelCase(r) : r));
+  ({
+    fetchInstance = fetch,
+    reqInterceptor,
+    resInterceptor,
+  }: {
+    fetchInstance?: typeof fetch;
+    reqInterceptor?: <T extends Props>(props: T) => T;
+    resInterceptor?: <T>(d: T) => T;
+  }) =>
+  <T>(props: Props): Promise<ToCamelCase<T>> => {
+    const { options, resultType = 'json', url } = reqInterceptor?.(props) ?? props;
 
-export const call = createCall(fetch);
+    return fetchInstance(url, computeOptions(options))
+      .then(d => d[resultType]())
+      .then(r => (isObject(r) || isArray(r) ? toCamelCase(r) : r))
+      .then(r => resInterceptor?.(r) ?? r);
+  };
+
+export const call = createCall({ fetchInstance: fetch });

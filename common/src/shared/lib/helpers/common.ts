@@ -60,3 +60,6 @@ export const alphabeticSortHelper = (a: string, b: string) => {
 };
 
 export const removeWhiteSpaces = (s: string) => [...s].filter(c => c.trim()).join('');
+
+// min and max included
+export const randomFromTo = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
