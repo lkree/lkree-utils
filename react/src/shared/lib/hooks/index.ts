@@ -10,3 +10,4 @@ export * from './useWindowEvent';
 export * from './useInitDownloadData';
 export * from './useFieldFocus';
 export * from './useEvent';
+export * from './useImmutable';
