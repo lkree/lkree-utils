@@ -11,7 +11,6 @@ type AdditionalPropsToComponent = {
 type ComponentProps<T extends ComponentType> = Omit<ComponentPropsWithoutRef<T>, keyof AdditionalPropsToComponent>;
 
 interface HOCProps<T extends ComponentType> {
-  baseComponent: T;
   closeDelay?: number;
   destroyIfClosed?: boolean;
   notifyClosingStarted?: boolean;
@@ -20,7 +19,11 @@ interface HOCProps<T extends ComponentType> {
   openPropName: keyof ComponentProps<T>;
 }
 
-type DelayedProps<T extends ComponentType> = HOCProps<T> & ComponentProps<T>;
+interface BaseComponent<T extends ComponentType> {
+  baseComponent: T;
+}
+
+type DelayedProps<T extends ComponentType> = HOCProps<T> & ComponentProps<T> & BaseComponent<T>;
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 0;
@@ -78,7 +81,7 @@ const Delayed = <T extends ComponentType>({
 
   if (destroyIfClosed && !externalShow && !internalShow) return null;
 
-  const Component = baseComponent as ComponentType<Omit<DelayedProps<T>, keyof HOCProps<T>>>;
+  const Component = baseComponent as ComponentType<Record<string, unknown>>;
 
   // const show = !externalShow && internalShow ? externalShow : internalShow;
 
@@ -95,6 +98,6 @@ const Delayed = <T extends ComponentType>({
 };
 
 export const WithDelay =
-  <T extends ComponentType<any>>(HOCProps: HOCProps<T>) =>
+  <T extends ComponentType<any>>(Component: T, HOCProps: HOCProps<T>) =>
   (props: ComponentProps<T>) =>
-    <Delayed {...props} {...HOCProps} />;
+    <Delayed {...props} {...HOCProps} baseComponent={Component} />;
