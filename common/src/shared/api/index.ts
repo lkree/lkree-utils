@@ -1,3 +1,6 @@
 export * from './utils';
-export * from './types';
+export type { ApiFunction, CreateClientSettings, CreateRequestResponseData } from './types';
 export * from './call';
+export { createMethod, method, Methods } from './methods';
+export type { CallParamsWithoutMethod, Method } from './methods';
+export { createClient, createClientSettings } from './createClient';

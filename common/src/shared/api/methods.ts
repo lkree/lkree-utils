@@ -1,4 +1,4 @@
-import { call, Props } from './call';
+import { call, Props, createCall } from './call';
 
 export enum Methods {
   Get = 'GET',
@@ -21,3 +21,9 @@ export type Method<M extends Methods = Methods, Request = any, Response = any> =
 ) => Promise<Response>;
 
 export const method: Method = props => call({ ...props });
+
+export const createMethod = (...createCallParams: Parameters<typeof createCall>): Method => {
+  const callInstance = createCall(...createCallParams);
+
+  return props => callInstance({ ...props });
+};

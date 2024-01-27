@@ -7,6 +7,8 @@ export const randomId = () => Math.floor(Math.random() * Date.now()).toString(16
 
 export const noop: Noop = () => void 0;
 
+export const noopData = <T>(d: T) => d;
+
 export const anyFunction: AnyFunction = () => void 0;
 
 export const exhaustiveCheck = (_: never): never => _;

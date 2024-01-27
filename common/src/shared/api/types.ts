@@ -1,14 +1,13 @@
-import { isString } from '~/shared/lib/helpers';
-import { AnyFunction } from '~/shared/lib/ts';
+import type { AnyFunction, Voidable } from '~/shared/lib/ts';
 
-import { BuiltInHeaders, ResultTypes } from './call';
-import { Methods, method } from './methods';
+import type { ResultTypes } from './call';
+import type { Methods, CallParamsWithoutMethod } from './methods';
 
 export type CreateRequestResponseData<Request = any, Response = any> = { request: Request; response: Response };
 
 export type ApiFunction<T extends CreateRequestResponseData> = (data: T['request']) => Promise<T['response']>;
 
-type DynamicUrlProps<Path> = Path extends (query: infer Q) => string
+export type DynamicUrlProps<Path> = Path extends (query: infer Q) => string
   ? Q extends Record<any, any>
     ? { urlProps: Q }
     : { urlProps?: never }
@@ -22,25 +21,46 @@ type StringifyBody<T> = T extends boolean ? { stringifyBody: T } : { stringifyBo
 
 type ResultType<T> = T extends ResultTypes ? { resultType: T } : { resultType?: never };
 
-export type Cfg<M, Path, H, S, R> = {
+type TransformIn<T> = T extends AnyFunction ? { transformIn: T } : { transformIn?: never };
+
+type TransformOut<T> = T extends AnyFunction ? { transformOut: T } : { transformOut?: never };
+
+type RestOptions<T> = T extends Record<string, unknown> ? { options: T } : { options?: never };
+
+export type GetValueFromPayloadOrTransformOut<Response, TransformOut> = TransformOut extends (
+  ...props: Array<any>
+) => infer S
+  ? S
+  : Response;
+
+export type Cfg<M, Path, H, S, R, TI, TO, RO> = {
   method: M;
   url: Path;
 } & Headers<H> &
   StringifyBody<S> &
-  ResultType<R>;
+  ResultType<R> &
+  TransformIn<TI> &
+  TransformOut<TO> &
+  RestOptions<RO>;
 
-type TCfg<M, Path, Headers, Stringify, ResultType, UrlParams, Payload, Response> = Cfg<
+export type TCfg<
   M,
   Path,
   Headers,
   Stringify,
-  ResultType
-> & {
+  ResultType,
+  UrlParams,
+  Payload,
+  Response,
+  TransformIn,
+  TransformOut,
+  RestOptions
+> = Cfg<M, Path, Headers, Stringify, ResultType, TransformIn, TransformOut, RestOptions> & {
   payload: Payload;
   response: Response;
 } & TUrlParams<UrlParams>;
 
-type Client<M> = {
+export type Client<M> = {
   [K in keyof M]: M[K] extends TCfg<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     infer Method,
@@ -53,74 +73,48 @@ type Client<M> = {
     infer ResultType,
     infer UrlParams,
     infer Payload,
-    infer Response
+    infer Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    infer TransformIn,
+    infer TransformOut,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    infer RestOptions
   >
-    ? (args: { payload: Payload } & TUrlParams<UrlParams> & DynamicUrlProps<Path>) => Promise<Response>
+    ? (
+        args: { payload: Payload } & TUrlParams<UrlParams> & DynamicUrlProps<Path>
+      ) => Promise<GetValueFromPayloadOrTransformOut<Response, TransformOut>>
     : never;
 };
 
-const createMethod =
-  <M, Path, Headers, StringifyBody, ResultType, UrlParams, Payload, Response>(
-    cfg: TCfg<M, Path, Headers, StringifyBody, ResultType, UrlParams, Payload, Response>
-  ): ((args: { payload: Payload; urlParams: UrlParams } & DynamicUrlProps<Path>) => Promise<Response>) =>
-  (args: { payload: Payload; urlParams: UrlParams } & DynamicUrlProps<Path>) =>
-    method({
-      options: {
-        body: args.payload,
-        headers: cfg.headers,
-        method: cfg.method as Methods,
-        stringifyBody: cfg.stringifyBody,
-      },
-      resultType: cfg.resultType,
-      url: isString(cfg.url) ? cfg.url : (cfg.url as AnyFunction)(args.urlProps),
-    });
-
-type ClientSettings<M> = {
-  [K in keyof M]: M[K] extends Cfg<infer Method, infer UrlParams, infer Headers, infer StringifyBody, infer ResultType>
-    ? Cfg<Method, UrlParams, Headers, StringifyBody, ResultType>
+export type ClientSettings<M> = {
+  [K in keyof M]: M[K] extends Cfg<
+    infer Method,
+    infer Path,
+    infer Headers,
+    infer StringifyBody,
+    infer ResultType,
+    infer TransformIn,
+    infer Payload,
+    infer RestOptions
+  >
+    ? Cfg<Method, Path, Headers, StringifyBody, ResultType, TransformIn, Payload, RestOptions>
     : never;
 };
 
-type CreateClientSettings<
-  T extends Record<string, TCfg<Methods, string | AnyFunction, any, any, ResultTypes, any, any, any>>
-> = T;
+export type AnyTCfg = TCfg<
+  Methods,
+  string | AnyFunction,
+  Record<string, any>,
+  boolean,
+  Voidable<ResultTypes>,
+  any,
+  any,
+  any,
+  Voidable<AnyFunction>,
+  Voidable<AnyFunction>,
+  Voidable<Omit<CallParamsWithoutMethod<Methods>['options'], 'method' | 'headers' | 'body' | 'stringifyBody'>>
+>;
 
-type ExecuteClientSettings<T> = T extends CreateClientSettings<infer R> ? R : never;
+export type CreateClientSettings<T extends Record<string, AnyTCfg>> = T;
 
-const createClient = <A, B = ExecuteClientSettings<A>>(clients: ClientSettings<B>): Client<B> => {
-  const result = {} as Client<B>;
-
-  Object.keys(clients).forEach(key => {
-    // @ts-expect-error
-    result[key as keyof A] = createMethod(clients[key as keyof A]);
-  });
-
-  return result;
-};
-
-type TT = CreateClientSettings<{
-  a: {
-    method: Methods.Get;
-    url: (a: { a: 5 }) => 'asd';
-    payload: { a: 5 };
-    response: 123;
-    urlParams: { a: 10 };
-    headers: { builtIn: [BuiltInHeaders.JSON] };
-    stringifyBody: true;
-    resultType: ResultTypes.JSON;
-  };
-}>;
-
-const test = createClient<TT>({
-  a: {
-    headers: { builtIn: [BuiltInHeaders.JSON] },
-    method: Methods.Get,
-    resultType: ResultTypes.JSON,
-    stringifyBody: true,
-    url: ({ a }) => 'asd',
-  },
-});
-
-void test.a({ payload: { a: 5 }, urlParams: { a: 10 }, urlProps: { a: 5 } }).then(d => {
-  console.log(d);
-});
+export type ExecuteClientSettings<T> = T extends CreateClientSettings<infer R> ? R : never;
