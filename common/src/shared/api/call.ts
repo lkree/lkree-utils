@@ -12,13 +12,18 @@ interface Headers {
   own?: Record<string, string>;
 }
 
-interface Props {
+export enum ResultTypes {
+  Text = 'text',
+  JSON = 'json',
+}
+
+export interface Props {
   options?: {
     headers?: Headers;
     body?: any;
     stringifyBody?: boolean;
   } & Omit<RequestInit, 'body' | 'headers'>;
-  resultType?: 'text' | 'json';
+  resultType?: ResultTypes;
   url: string;
 }
 
@@ -50,7 +55,7 @@ export const createCall =
     resInterceptor?: <T>(d: T) => T;
   }) =>
   <T>(props: Props): Promise<ToCamelCase<T>> => {
-    const { options, resultType = 'json', url } = reqInterceptor?.(props) ?? props;
+    const { options, resultType = ResultTypes.JSON, url } = reqInterceptor?.(props) ?? props;
 
     return fetchInstance(url, computeOptions(options))
       .then(d => d[resultType]())

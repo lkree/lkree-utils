@@ -1,5 +1,13 @@
-import type { ReactEventHandler } from 'react';
+import type { SyntheticEvent } from 'react';
 
-export const stopPropagation: ReactEventHandler = e => e.stopPropagation();
+export const defaultPrevented = <T extends (...args: [SyntheticEvent<any>, ...any]) => any>(callback: T) =>
+  ((e, ...args: Parameters<T>) => {
+    e?.preventDefault();
+    callback(e, ...args);
+  }) as T;
 
-export const preventDefault: ReactEventHandler = e => e.preventDefault();
+export const stoppedPropagation = <T extends (...args: [SyntheticEvent<any>, ...any]) => any>(callback: T) =>
+  ((e, ...args: Parameters<T>) => {
+    e?.stopPropagation();
+    callback(e, ...args);
+  }) as T;

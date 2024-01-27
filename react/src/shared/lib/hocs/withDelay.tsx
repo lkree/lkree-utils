@@ -38,10 +38,10 @@ const Delayed = <T extends ComponentType>({
   openPropName,
   ...props
 }: DelayedProps<T>) => {
-  const [internalShow, setInternalShow] = useState(false);
+  const { 0: internalShow, 1: setInternalShow } = useState(false);
   const isMounted = useIsMounted();
-  const [openingProcessEnded, setOpeningProcessEnded] = useState(false);
-  const [closingProcessStarted, setClosingProcessStarted] = useState(false);
+  const { 0: openingProcessEnded, 1: setOpeningProcessEnded } = useState(false);
+  const { 0: closingProcessStarted, 1: setClosingProcessStarted } = useState(false);
   const externalShow = (props as unknown as ComponentProps<T>)[openPropName];
   const prevExternalShow = usePrev(externalShow);
 

@@ -11,7 +11,7 @@ export interface Queue<T> {
 }
 
 export const useQueue = <T>(): Queue<T> => {
-  const [queue, setQueue] = useState<Array<T>>([]);
+  const { 0: queue, 1: setQueue } = useState<Array<T>>([]);
 
   return useMemo(
     () => ({
