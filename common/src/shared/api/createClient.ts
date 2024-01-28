@@ -14,7 +14,7 @@ import type {
 } from './types';
 
 const createMethod =
-  <M, Path, Headers, StringifyBody, ResultType, UrlParams, Payload, Response, TransformIn, TransformOut, RestOptions>(
+  <M, Path, Headers, StringifyBody, ResultType, TransformIn, TransformOut, RestOptions, UrlParams, Payload, Response>(
     cfg: TCfg<
       M,
       Path,
@@ -31,13 +31,18 @@ const createMethod =
   ): ((
     args: { payload: Payload; urlParams: UrlParams } & DynamicUrlProps<Path>
   ) => Promise<GetValueFromPayloadOrTransformOut<Response, TransformOut>>) =>
-  (args: { payload: Payload; urlParams: UrlParams } & DynamicUrlProps<Path>) =>
+  (
+    args: { payload: Payload; urlParams: UrlParams } & DynamicUrlProps<Path> = {} as {
+      payload: Payload;
+      urlParams: UrlParams;
+    } & DynamicUrlProps<Path>
+  ) =>
     method({
       options: {
         body: cfg.transformOut?.(args.payload) ?? args.payload,
         headers: cfg.headers,
         method: cfg.method as Methods,
-        stringifyBody: cfg.stringifyBody,
+        stringifyBody: cfg.stringifyBody as boolean,
         ...(cfg.options ?? EMPTY_OBJECT),
       },
       resultType: cfg.resultType,
