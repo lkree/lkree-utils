@@ -39,7 +39,7 @@ export type GetValueFromPayloadOrTransformOut<Response, TransformOut> = Transfor
   ...props: Array<any>
 ) => infer S
   ? S
-  : ExtractNonNullableValue<Response, undefined>;
+  : ExtractNonNullableValue<Response>;
 
 export type Cfg<M, Path, H, S, R, TI, TO, RO> = {
   method: M;
