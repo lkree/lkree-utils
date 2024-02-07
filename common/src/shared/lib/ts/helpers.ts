@@ -4,6 +4,10 @@ export type Voidable<T> = T | undefined;
 
 export type AnyFunction = (...args: Array<any>) => any;
 
+export type NonVoidable<T extends Record<string, any>> = {
+  [Key in keyof T]-?: T[Key];
+};
+
 export type NullableObj<T extends Record<string, any>> = {
   [Key in keyof T]: Nullable<T[Key]>;
 };

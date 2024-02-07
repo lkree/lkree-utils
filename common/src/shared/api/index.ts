@@ -3,4 +3,4 @@ export type { ApiFunction, CreateClientSettings, CreateRequestResponseData } fro
 export * from './call';
 export { createMethod, method, Methods } from './methods';
 export type { CallParamsWithoutMethod, Method } from './methods';
-export { createClient, createClientSettings } from './createClient';
+export { createClient, createClientSettings, createClientWithOwnFetch } from './createClient';

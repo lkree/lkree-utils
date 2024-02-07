@@ -10,6 +10,15 @@ export const excludeDataFromObject = <T extends Record<string, any>, K extends A
     K[number]
   >;
 
+export const getDataFromObject = <T extends Record<string, any>, K extends Array<keyof T>>(
+  data: T,
+  fieldsToExclude: K
+): Pick<T, K[number]> =>
+  Object.fromEntries(Object.entries(data).filter(([fieldName]) => fieldsToExclude.includes(fieldName))) as Pick<
+    T,
+    K[number]
+  >;
+
 type Value<T> = T extends boolean | number | string
   ? T
   : T extends Array<unknown> | Record<string, any>

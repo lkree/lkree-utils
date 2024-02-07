@@ -7,9 +7,12 @@ export type CreateRequestResponseData<Request = any, Response = any> = { request
 
 export type ApiFunction<T extends CreateRequestResponseData> = (data: T['request']) => Promise<T['response']>;
 
-type ExtractNonNullableValue<Value, Fallback = never, Result = Value> = Value extends NonNullable<unknown>
-  ? Result
-  : Fallback;
+type ExtractNonNullableValue<
+  Value,
+  DataToCompare = unknown,
+  Fallback = never,
+  Result = Value
+> = Value extends NonNullable<DataToCompare> ? Result : Fallback;
 
 export type DynamicUrlProps<Path> = Path extends (query: infer Q) => string
   ? Q extends Record<any, any>
@@ -21,35 +24,70 @@ export type ExtractPathPropsNeed<T> = DynamicUrlProps<T> extends { urlProps: inf
   ? ExtractNonNullableValue<S>
   : void;
 
-type TUrlParams<T> = ExtractNonNullableValue<T, { urlParams?: never }, { urlParams: T }>;
+type TUrlParams<T> = ExtractNonNullableValue<T, unknown, { urlParams?: never }, { urlParams: T }>;
 
 type CustomHeaders<T> = T extends Record<string, any> ? { headers: T } : { headers?: never };
 
-type StringifyBody<T> = ExtractNonNullableValue<T, { stringifyBody?: never }, { stringifyBody: T }>;
+type StringifyBody<T> = ExtractNonNullableValue<T, boolean, { stringifyBody?: never }, { stringifyBody: T }>;
 
-type ResultType<T> = T extends ResultTypes ? { resultType: T } : { resultType?: never };
+type ResultType<T> = T extends NonNullable<ResultTypes> ? { resultType: T } : { resultType?: never };
 
-type TransformIn<T> = T extends AnyFunction ? { transformIn: T } : { transformIn?: never };
+type TransformIn<T> = T extends NonNullable<AnyFunction> ? { transformIn: T } : { transformIn?: never };
 
-type TransformOut<T> = T extends AnyFunction ? { transformOut: T } : { transformOut?: never };
+type TransformOut<T> = T extends NonNullable<AnyFunction> ? { transformOut: T } : { transformOut?: never };
 
-type RestOptions<T> = T extends NonNullable<unknown> ? { options: T } : { options?: never };
+type RequestMethod<T> = T extends Methods ? { method: T } : { method?: never };
 
-export type GetValueFromPayloadOrTransformOut<Response, TransformOut> = TransformOut extends (
+export type GetValueFromPayloadOrTransformIn<Response, TransformIn> = TransformIn extends (
   ...props: Array<any>
 ) => infer S
   ? S
   : ExtractNonNullableValue<Response>;
 
-export type Cfg<M, Path, H, S, R, TI, TO, RO> = {
-  method: M;
+export type RequestOptions = {
+  method?: Methods;
+  headers?: Record<string, string>;
+  transformOut?: AnyFunction;
+} & Omit<CallParamsWithoutMethod<Methods>['options'], 'method' | 'headers' | 'body' | 'stringifyBody'>;
+
+export type ResponseOptions = {
+  resultType?: ResultTypes;
+  stringifyBody?: boolean;
+  transformIn?: AnyFunction;
+};
+
+export type Cfg<M, Path, H, S, R, TI, TO> = {
   url: Path;
-} & CustomHeaders<H> &
-  StringifyBody<S> &
-  ResultType<R> &
-  TransformIn<TI> &
-  TransformOut<TO> &
-  RestOptions<RO>;
+} & ExtractNonNullableValue<
+  S,
+  boolean,
+  ExtractNonNullableValue<
+    R & TI,
+    unknown,
+    { responseOptions?: never },
+    { responseOptions: ResultType<R> & StringifyBody<S> & TransformIn<TI> }
+  >,
+  { responseOptions: ResultType<R> & StringifyBody<S> & TransformIn<TI> }
+> &
+  ExtractNonNullableValue<
+    M & H & TO,
+    unknown,
+    {
+      requestOptions?: Omit<
+        CallParamsWithoutMethod<Methods>['options'],
+        'method' | 'headers' | 'body' | 'stringifyBody'
+      >;
+    },
+    {
+      requestOptions: Omit<
+        CallParamsWithoutMethod<Methods>['options'],
+        'method' | 'headers' | 'body' | 'stringifyBody'
+      > &
+        RequestMethod<M> &
+        CustomHeaders<H> &
+        TransformOut<TO>;
+    }
+  >;
 
 export type TCfg<
   M,
@@ -59,11 +97,10 @@ export type TCfg<
   ResultType,
   TransformIn,
   TransformOut,
-  RestOptions,
   UrlParams,
   Payload = void,
   Response = void
-> = Cfg<M, Path, Headers, Stringify, ResultType, TransformIn, TransformOut, RestOptions> & {
+> = Cfg<M, Path, Headers, Stringify, ResultType, TransformIn, TransformOut> & {
   payload?: Payload;
   response?: Response;
 } & TUrlParams<UrlParams>;
@@ -89,20 +126,19 @@ export type Client<M> = {
     infer ResultType,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     infer TransformIn,
-    infer TransformOut,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    infer RestOptions,
+    infer TransformOut,
     infer UrlParams,
     infer Payload,
     infer Response
   >
     ? ArgsChecker<Payload, UrlParams, ExtractPathPropsNeed<Path>> extends true
       ? (
-          args: ExtractNonNullableValue<Payload, { payload?: never }, { payload: Payload }> &
+          args: ExtractNonNullableValue<Payload, unknown, { payload?: never }, { payload: Payload }> &
             TUrlParams<UrlParams> &
             DynamicUrlProps<Path>
-        ) => Promise<GetValueFromPayloadOrTransformOut<Response, TransformOut>>
-      : (args?: never) => Promise<GetValueFromPayloadOrTransformOut<Response, TransformOut>>
+        ) => Promise<GetValueFromPayloadOrTransformIn<Response, TransformIn>>
+      : (args?: never) => Promise<GetValueFromPayloadOrTransformIn<Response, TransformIn>>
     : never;
 };
 
@@ -114,22 +150,20 @@ export type ClientSettings<M> = {
     infer StringifyBody,
     infer ResultType,
     infer TransformIn,
-    infer TransformOut,
-    infer RestOptions
+    infer TransformOut
   >
-    ? Cfg<Method, Path, Headers, StringifyBody, ResultType, TransformIn, TransformOut, RestOptions>
+    ? Cfg<Method, Path, Headers, StringifyBody, ResultType, TransformIn, TransformOut>
     : never;
 };
 
 export type AnyTCfg = TCfg<
-  Methods,
+  Voidable<Methods>,
   string | AnyFunction,
   Voidable<Record<string, any>>,
   Voidable<boolean>,
   Voidable<ResultTypes>,
   Voidable<AnyFunction>,
   Voidable<AnyFunction>,
-  Voidable<Omit<CallParamsWithoutMethod<Methods>['options'], 'method' | 'headers' | 'body' | 'stringifyBody'>>,
   Voidable<Record<string, any>>,
   Voidable<any>,
   Voidable<any>

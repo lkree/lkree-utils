@@ -1,4 +1,4 @@
-import { isArray, isObject } from '~/shared/lib/helpers';
+import { isArray, isObject, isString } from '~/shared/lib/helpers';
 import type { ToCamelCase } from '~/shared/lib/ts';
 
 import { computeHeaders, getJSONHeaders, toCamelCase } from './utils';
@@ -40,7 +40,14 @@ const computeOptions = (options?: Props['options']) =>
     ? options
     : {
         ...options,
-        ...(options.body && { body: options.stringifyBody ?? true ? JSON.stringify(options.body) : options.body }),
+        ...(options.body && {
+          body:
+            options.stringifyBody ?? true
+              ? isString(options.body)
+                ? options.body
+                : JSON.stringify(options.body)
+              : options.body,
+        }),
         ...(options.headers && { headers: computeHeadersObject(options.headers) }),
       };
 
