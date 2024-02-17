@@ -1,0 +1,88 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "root": true,
+  "ignorePatterns": [".idea", "node_modules", "*.js", "build"],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "extends": [
+    "eslint:recommended",
+    "standard-typescript-prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "plugins": [
+    "babel",
+    "prettier",
+    "perfectionist",
+    "eslint-plugin-promise",
+    "eslint-plugin-prettier",
+    "eslint-plugin-import",
+    "eslint-plugin-n",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "no-restricted-imports": 0,
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "prettier/prettier": ["error"],
+    "no-undef": 0,
+    "babel/no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "no-unused-expressions": "off",
+    "promise/param-names": "off",
+    "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/no-confusing-void-expression": 0,
+    "@typescript-eslint/semi": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/ban-types": 2,
+    "@typescript-eslint/promise-function-async": 0,
+    "@typescript-eslint/strict-boolean-expressions": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "@typescript-eslint/no-unsafe-argument": 0,
+    "@typescript-eslint/no-unused-vars": "error",
+    "import/no-default-export": "error",
+    "import/no-cycle": "error",
+    "n/no-callback-literal": 0,
+    "perfectionist/sort-exports": [
+      "error",
+      {
+        "type": "line-length",
+        "order": "asc"
+      }
+    ],
+    "perfectionist/sort-jsx-props": [
+      "error",
+      {
+        "type": "line-length",
+        "order": "asc"
+      }
+    ],
+    "perfectionist/sort-interfaces": [
+      "error",
+      {
+        "type": "alphabetical",
+        "order": "asc"
+      }
+    ],
+    "perfectionist/sort-objects": [
+      "error",
+      {
+        "type": "alphabetical",
+        "order": "asc"
+      }
+    ],
+    "perfectionist/sort-named-exports": [
+      "error",
+      {
+        "type": "alphabetical",
+        "order": "asc"
+      }
+    ]
+  }
+}

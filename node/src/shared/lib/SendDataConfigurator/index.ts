@@ -1,0 +1,1 @@
+export { SendDataConfigurator } from './model';
