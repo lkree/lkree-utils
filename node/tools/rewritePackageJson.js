@@ -1,6 +1,6 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { getEntriesKeys } = require('../webpack/createFilePaths');
+const { getEntriesKeys, getExportsPath } = require('../webpack/createFilePaths');
 
 const rootPath = path.resolve(__dirname, '../');
 const srcPath = path.resolve(rootPath, 'src/');
@@ -25,5 +25,6 @@ const srcPath = path.resolve(rootPath, 'src/');
     {
       files: getEntriesKeys(srcPath),
       type: 'module',
+      exports: getExportsPath(srcPath),
     });
 })();
