@@ -1,4 +1,4 @@
-import type { ActionCreator, Reducer, Store } from './types';
+import type { ActionCreator, Reducer } from './types';
 
 export function createAction<T extends string = string, K = void>(type: T, callback?: never): ActionCreator<T, K>;
 export function createAction<T extends string = string, K = void, S = void>(
@@ -32,6 +32,3 @@ export const createReducer: Reducer = (initialState, reducerMap) => (state, acti
 
   return currentState;
 };
-
-export const getStore = (): Store => globalThis.store;
-export const setStore = (store: Store) => (globalThis.store = store);

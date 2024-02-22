@@ -1,8 +1,7 @@
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 
-import { getStore } from '../storeUtils';
-import type { DefaultRootState } from '../types';
+import type { DefaultRootState, Store } from '../types';
 
 import { defaultSubscribeOptions, EqualityMethod, SubscribeMethod } from './const';
 import { storeCacher } from './storeCacher';
@@ -49,10 +48,11 @@ const getSubscribeMethods: GetSubscribeMethods = (
 
 const thunkDispatch: ThunkDispatch<DefaultRootState, any, AnyAction> = (
   ...props: Parameters<ThunkDispatch<DefaultRootState, any, AnyAction>>
-) => (getStore().dispatch as ThunkDispatch<DefaultRootState, any, AnyAction>)(...props);
+) => (storeController.getStore().dispatch as ThunkDispatch<DefaultRootState, any, AnyAction>)(...props);
 
 export const storeController: StoreController = {
-  getStore,
+  getStore: (): Store => globalThis.store,
+  setStore: store => (globalThis.store = store),
   thunkDispatch,
   whenStateChange: (equal, options) => getSubscribeMethods({ equal, options }, EqualityMethod.change),
   whenStateEqual: (equal, options) => getSubscribeMethods({ equal, options }, EqualityMethod.equal),

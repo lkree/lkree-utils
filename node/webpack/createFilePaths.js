@@ -37,7 +37,16 @@ module.exports = {
   getEntries: folder => _getEntries(getIndexFilesPaths(folder), folder),
   getEntriesKeys: folder => getIndexFilesPaths(folder).map(getEntreKey),
   getExportsPath: folder => getIndexFilesPaths(folder).reduce((r, indexFilePath) => {
-    r[`.${getEntreKey(indexFilePath)}`] = `.${getEntreKey(indexFilePath)}${INDEX_JS_FILE_NAME}`;
+    const key = getEntreKey(indexFilePath);
+
+    console.log(key);
+    if (INDEX_JS_FILE_NAME === key) {
+      r['.'] = key
+    } else {
+      const mKey = `.${key}`;
+
+      r[mKey.slice(0, mKey.length - 1)] = `.${getEntreKey(indexFilePath)}${INDEX_JS_FILE_NAME}`;
+    }
 
     return r;
   }, {})

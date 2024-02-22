@@ -5,9 +5,11 @@ module.exports = function () {
     const rootPath = path.resolve(__dirname, '../');
     const srcPath = path.resolve(rootPath, 'src/');
 
-    return Object.entries(getEntries(srcPath)).map(([name, filePath]) => {
-      console.log(name);
-      console.log(filePath);
+    const r = Object.entries(getEntries(srcPath));
+
+    console.log(r);
+
+    return r.map(([name, filePath]) => {
 
       return ({
         entry: {

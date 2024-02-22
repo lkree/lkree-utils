@@ -34,7 +34,6 @@ module.exports = ({ modeEnv, entry, webpackAliases, outputPath, ...rest }) => ({
         chunkFormat: false,
         path: outputPath,
         filename: 'index.js',
-        clean: true
     },
     externalsPresets: {
       node: true // in order to ignore built-in modules like path, fs, etc.

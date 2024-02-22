@@ -6,10 +6,10 @@ export {
   del,
   FULL_VALUE,
   get,
+  getRouters,
   post,
   put,
   RequestDataFields,
   requestPropsHandle,
-  routers,
   withRouter,
 } from './class';

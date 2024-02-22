@@ -13,7 +13,13 @@ enum Methods {
 
 type MethodSettings = { methodName: string; method: Methods };
 
-export const routers = Router();
+const createRouters = () => {
+  const routers = Router();
+
+  return () => routers;
+};
+
+export const getRouters = createRouters();
 
 const applyMethodToRouter = (
   router: Router,
@@ -53,7 +59,7 @@ export const withRouter = ({ domainName = API_DOMAIN, routerPath }: { domainName
 
       names.length = 0;
 
-      routers.use(`/${domainName}`, router);
+      getRouters().use(`/${domainName}`, router);
 
       return classInstance;
     };

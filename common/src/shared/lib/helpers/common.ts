@@ -65,3 +65,6 @@ export const removeWhiteSpaces = (s: string) => [...s].filter(c => c.trim()).joi
 
 // min and max included
 export const randomFromTo = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
+
+export const insertIntoString = (str: string, insertions: Array<string | number>) =>
+  insertions.reduce<string>((result, insert, index) => result.replaceAll(`{${index}}`, insert.toString()), str);

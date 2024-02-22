@@ -43,4 +43,5 @@ export type StoreController = Record<
 > & {
   thunkDispatch: ThunkDispatch<DefaultRootState, any, AnyAction>;
   getStore: () => Store;
+  setStore: (Store: Store) => void;
 };
