@@ -15,3 +15,5 @@ export const isObject = (d: unknown): d is Record<string, any> =>
 export const isNumber = (value: unknown): value is number => typeof value === 'number';
 
 export const isString = (d: unknown): d is string => typeof d === 'string';
+
+export const isPromise = <T>(d: unknown): d is Promise<T> => isObject(d) && 'then' in d && typeof d.then === 'function';

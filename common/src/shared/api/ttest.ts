@@ -7,18 +7,16 @@
 // import { AnyFunction } from '~/shared/lib/ts';
 //
 // // import type { Nullable } from '~/shared/lib/ts';
-// //
-// // //
-export {};
 //
-// //
+// export {};
+//
 // type TT = CreateClientSettings<{
 //   getDates: {
 //     url: '546';
 //     response: { dates: Array<string> };
 //     requestOptions: {
 //       method: Methods.Post;
-//       headers: { builtIn: [BuiltInHeaders.JSON] };
+//       headers: () => { builtIn: [BuiltInHeaders.JSON] };
 //       transformOut: AnyFunction;
 //     };
 //     responseOptions: {
@@ -31,7 +29,7 @@ export {};
 //   createClientSettings<TT>({
 //     getDates: {
 //       requestOptions: {
-//         headers: { builtIn: [BuiltInHeaders.JSON] },
+//         headers: () => ({ builtIn: [BuiltInHeaders.JSON] }),
 //         method: Methods.Post,
 //         transformOut: (a: any) => 123,
 //       },

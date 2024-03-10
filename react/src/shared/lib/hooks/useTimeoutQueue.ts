@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 
-import { noop } from 'lkree-common-utils/helpers';
-import type { AnyFunction } from 'lkree-common-utils/ts';
+import { noop } from 'lkree-common-utils/lib/helpers';
+import type { AnyFunction } from 'lkree-common-utils/lib/ts';
 
 import { useLatest } from './useLatest';
 import { Queue, useQueue } from './useQueue';

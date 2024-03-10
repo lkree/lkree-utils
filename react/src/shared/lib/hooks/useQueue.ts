@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import type { Voidable } from 'lkree-common-utils/ts';
+import type { Voidable } from 'lkree-common-utils/lib/ts';
 
 export interface Queue<T> {
   get: () => Voidable<T>;

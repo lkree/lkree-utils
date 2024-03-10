@@ -10,7 +10,7 @@ module.exports = ({ modeEnv, entry, webpackAliases, outputPath, ...rest }) => ({
     module: {
         rules: [
             {
-                test: /\.(js|ts)x?$/,
+                test: /\.(js|ts)$/,
                 use: [
                     {
                         loader: 'thread-loader',
@@ -29,11 +29,10 @@ module.exports = ({ modeEnv, entry, webpackAliases, outputPath, ...rest }) => ({
     },
     output: {
         library: {
-            type: 'commonjs-static',
+            type: 'module',
         },
         path: outputPath,
         filename: 'index.js',
-        clean: true
     },
   ...rest
 });

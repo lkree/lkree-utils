@@ -2515,6 +2515,13 @@ bundle-declarations-webpack-plugin@4.0.1:
   dependencies:
     dts-bundle-generator "^7.1.0"
 
+bundle-declarations-webpack-plugin@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/bundle-declarations-webpack-plugin/-/bundle-declarations-webpack-plugin-5.0.1.tgz#70b15a2ddc8b9f32f33386bc9854ff80023adebe"
+  integrity sha512-lt41e3BT3gmPtG9OP2mn8BB7foytzv5lmyx7dexP6Gp673nlpRC9eOqTJ4s7GpNoeLPHLD99HhmaJLxp+l6CtQ==
+  dependencies:
+    dts-bundle-generator "^9.1.0"
+
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
@@ -2819,6 +2826,14 @@ dts-bundle-generator@^7.1.0:
   integrity sha512-pHjRo52hvvLDRijzIYRTS9eJR7vAOs3gd/7jx+7YVnLU8ay3yPUWGtHXPtuMBSlJYk/s4nq1SvXObDCZVguYMg==
   dependencies:
     typescript ">=4.5.2"
+    yargs "^17.6.0"
+
+dts-bundle-generator@^9.1.0:
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/dts-bundle-generator/-/dts-bundle-generator-9.3.1.tgz#dfc2b20b2ceb5afe4b3deed516b997e8782219df"
+  integrity sha512-1/nMT7LFOkXbrL1ZvLpzrjNbfX090LZ64nLIXVmet557mshFCGP/oTiQiZenafJZ6GsmRQLTYKSlQnkxK8tsTw==
+  dependencies:
+    typescript ">=5.0.2"
     yargs "^17.6.0"
 
 eastasianwidth@^0.2.0:
@@ -4466,18 +4481,27 @@ listr2@^4.0.1:
     through "^2.3.8"
     wrap-ansi "^7.0.0"
 
-lkree-common-utils@latest:
-  version "0.0.42"
-  resolved "https://registry.yarnpkg.com/lkree-common-utils/-/lkree-common-utils-0.0.42.tgz#4cf838417f52b5be0e023a287c7b4bab3854b683"
-  integrity sha512-J2algSI53rL74jQ1dYbp9kTVIP40LjTvEz6nsYcChlZekbWZM+wu6yt7gcvqoc2MTptaygTQRX3VAivBClGwVw==
+lkree-common-utils@^0.0.43:
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/lkree-common-utils/-/lkree-common-utils-0.0.43.tgz#bed4678343f3b585aa2335e4f77d5ee82ce5d5cd"
+  integrity sha512-eTncjDSkJaSlpb+n+/VA67gJjGiadtwpCkbNOwMASldIY0sVxYb3jEhqCUB6efMZQDccywn9CgGfdx4WvM1XDg==
   dependencies:
     lodash.camelcase "4.3.0"
     lodash.snakecase "4.1.1"
 
-lkree-node-utils@latest:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/lkree-node-utils/-/lkree-node-utils-0.0.6.tgz#d6e2da3f94e22420ec44fffd61cfff3a90f8da3f"
-  integrity sha512-qIM4IJRwYO+1RSrIuh9QBCuwftZZfMzTtLwLMFyIuubYHd1nTFEs7kCcE+HKwv00Kyu/tYBBBi9ftYCT5FtiVw==
+lkree-node-utils@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/lkree-node-utils/-/lkree-node-utils-0.0.13.tgz#0ef5cb8b68998846625ad8be1b8867aac30041e5"
+  integrity sha512-mtIvJHAlhw1TH4GWlB0881IpbqsDnaNtYKRQHIt6ug4gsTQH86pCvPYOWq5MYZHw6WBl5diz1vb/sV9zwM0xBg==
+
+lkree-webpack-utils@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/lkree-webpack-utils/-/lkree-webpack-utils-0.0.7.tgz#74af6c153f6a08307f87cf3f44c9c2873cee3493"
+  integrity sha512-v/pswCelgsX6B7Cw1aHvszRTDglVNH9XAktO0wb23pLPO26ujVtdI9wYI2JROiImzq/+jGcv7LLujU5yZ2LDDg==
+  dependencies:
+    bundle-declarations-webpack-plugin "^5.0.1"
+    lkree-common-utils "^0.0.43"
+    lkree-node-utils "^0.0.13"
 
 loader-runner@^4.1.0, loader-runner@^4.2.0:
   version "4.3.0"
@@ -5582,7 +5606,7 @@ typed-array-length@^1.0.4:
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
 
-typescript@5.3.3:
+typescript@5.3.3, typescript@>=5.0.2:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.3.tgz#b3ce6ba258e72e6305ba66f5c9b452aaee3ffe37"
   integrity sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==

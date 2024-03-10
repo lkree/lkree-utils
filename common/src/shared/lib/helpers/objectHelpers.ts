@@ -1,5 +1,7 @@
 import { alphabeticSortHelper, removeWhiteSpaces } from './common';
-import { isArray, isNumber, isObject, isPrimitive, isString } from './typeGuards';
+import { isArray, isDate, isNumber, isObject, isPrimitive, isString } from './typeGuards';
+
+const forEachTypeGuards = { isArray, isObject, isPrimitive };
 
 export const excludeDataFromObject = <T extends Record<string, any>, K extends Array<keyof T>>(
   data: T,
@@ -19,17 +21,36 @@ export const getDataFromObject = <T extends Record<string, any>, K extends Array
     K[number]
   >;
 
-type Value<T> = T extends boolean | number | string
-  ? T
-  : T extends Array<unknown> | Record<string, any>
-  ? T[keyof T]
-  : never;
+type Value<T> = T extends Array<unknown> | Record<string, any> ? T[keyof T] : T;
 
-type ReturnValue<T, K> = T extends boolean | number | string
-  ? K
-  : T extends Array<unknown> | Record<string, any>
-  ? { [Key in keyof T]: K }
-  : never;
+type ReturnValue<T, K> = T extends Array<unknown> | Record<string, any> ? { [Key in keyof T]: ReturnValue<T, K> } : K;
+
+export const forEachObjectValueType = <T, K extends (value: Value<T>) => any>(
+  data: T,
+  callback: K,
+  type: 'Object' | 'Array' | 'Primitive'
+): ReturnValue<T, ReturnType<K>> => {
+  const isSearchingValue = forEachTypeGuards[`is${type}`];
+
+  if (isSearchingValue(data)) callback(data as Value<T>);
+
+  return data && typeof data === 'object' && !isDate(data)
+    ? Object.entries(data as object).reduce(
+        (r, { 0: name, 1: value }) => {
+          if (isSearchingValue(value)) value = callback(value as Value<T>);
+
+          r[name as keyof typeof r] = isObject(value)
+            ? forEachObjectValueType(value, callback, type)
+            : isArray(value)
+              ? value.map(c => forEachObjectValueType(c, callback as (d: unknown) => unknown, type))
+              : value;
+
+          return r;
+        },
+        data as ReturnValue<T, ReturnType<K>>
+      )
+    : (data as ReturnValue<T, ReturnType<K>>);
+};
 
 export const forEachValue = <T, K extends (value: Value<T>) => any>(
   data: T,
@@ -37,25 +58,31 @@ export const forEachValue = <T, K extends (value: Value<T>) => any>(
 ): ReturnValue<T, ReturnType<K>> =>
   isPrimitive(data)
     ? (callback(data as Value<T>) as ReturnValue<T, ReturnType<K>>)
-    : Object.entries(data as object).reduce((r, [name, value]) => {
-        r[name as keyof typeof r] = isObject(value)
-          ? forEachValue(value, callback)
-          : isArray(value)
-          ? value.map(c => forEachValue(c, callback))
-          : callback(value as Value<T>);
+    : Object.entries(data as object).reduce(
+        (r, { 0: name, 1: value }) => {
+          r[name as keyof typeof r] = isObject(value)
+            ? forEachValue(value, callback)
+            : isArray(value)
+              ? value.map(c => forEachValue(c, callback as (d: unknown) => unknown))
+              : callback(value as Value<T>);
 
-        return r;
-      }, data as ReturnValue<T, ReturnType<K>>);
+          return r;
+        },
+        data as ReturnValue<T, ReturnType<K>>
+      );
 
 export const forEachKey = <T extends Record<string, any>>(
   data: T,
   callback: (key: string) => string
 ): Record<ReturnType<typeof callback>, T[keyof T]> =>
-  Object.entries(data).reduce((r, [name, value]) => {
-    r[callback(name)] = isObject(value) || isArray(value) ? forEachKey(value, callback) : value;
+  Object.entries(data).reduce(
+    (r, { 0: name, 1: value }) => {
+      r[callback(name)] = isObject(value) || isArray(value) ? forEachKey(value, callback) : value;
 
-    return r;
-  }, (isObject(data) ? {} : []) as Record<ReturnType<typeof callback>, T[keyof T]>);
+      return r;
+    },
+    (isObject(data) ? {} : []) as Record<ReturnType<typeof callback>, T[keyof T]>
+  );
 
 export const computeIntegerFromString = (s: unknown, numberSeparator: string) => {
   if (isNumber(s)) return s;

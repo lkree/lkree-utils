@@ -5,19 +5,22 @@ const INDEX_FILE_NAME = 'index';
 const INDEX_TS_FILE_NAME = `${INDEX_FILE_NAME}.ts`;
 const INDEX_JS_FILE_NAME = `${INDEX_FILE_NAME}.js`;
 
+const defaultFolderFilter = folder => folder.lastIndexOf(INDEX_TS_FILE_NAME) >= 0;
+
 const INDEX_FILES_RULES = {
-  '^index.ts$': folder => folder.lastIndexOf(INDEX_TS_FILE_NAME) >= 0,
-  '\\\\api\\\\': folder => folder.lastIndexOf(INDEX_TS_FILE_NAME) >= 0,
   '\\\\lib\\\\': folder => folder.lastIndexOf(INDEX_TS_FILE_NAME) >= 0 && folder.split('\\').length === 4
 };
 
 
-const getIndexFilesPaths = folder => (
-  fs.readdirSync(folder, { recursive: true }).filter(folder => {
-    const [, ruleFn] = Object.entries(INDEX_FILES_RULES).find(([rule]) => folder.match(new RegExp(rule))) ?? [];
-
-    return ruleFn ? ruleFn(folder) : false;
-  })
+const getIndexFilesPaths = (folder, rules) => (
+  fs.readdirSync(folder, { recursive: true })
+    .filter(folder => (
+      (Object.entries(rules)
+        .find(([rule]) => folder.match(new RegExp(rule)))
+        ?.at(1)
+        ?.(folder))
+      ?? defaultFolderFilter(folder)
+  ))
 );
 
 const getEntreKey = indexFilePath => (
@@ -35,9 +38,9 @@ const _getEntries = (indexFilesPaths, startFolder) => indexFilesPaths.reduce((re
 
 
 module.exports = {
-  getEntries: folder => _getEntries(getIndexFilesPaths(folder), folder),
-  getEntriesKeys: folder => getIndexFilesPaths(folder).map(getEntreKey),
-  getExportsPath: folder => getIndexFilesPaths(folder).reduce((r, indexFilePath) => {
+  getEntries: folder => _getEntries(getIndexFilesPaths(folder, INDEX_FILES_RULES), folder),
+  getEntriesKeys: folder => getIndexFilesPaths(folder, INDEX_FILES_RULES).map(getEntreKey),
+  getExportsPath: folder => getIndexFilesPaths(folder, INDEX_FILES_RULES).reduce((r, indexFilePath) => {
     const key = getEntreKey(indexFilePath);
 
     if (!key) {

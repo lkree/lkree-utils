@@ -48,14 +48,14 @@ const createClientWithFetchInstance = (...createCallParams: Parameters<typeof cr
         urlParams: UrlParams;
       } & DynamicUrlProps<Path>
     ) => {
-      const requestOptions = computeDefaultRequestOptions(cfg.requestOptions);
+      const requestOptions = computeDefaultRequestOptions(cfg.requestOptions as RequestOptions);
       const responseOptions = computeDefaultResponseOptions(cfg.responseOptions as ResponseOptions);
 
       return method({
         options: {
           ...requestOptions,
           body: requestOptions.transformOut(args.payload),
-          headers: requestOptions.headers,
+          headers: typeof requestOptions.headers === 'function' ? requestOptions.headers() : requestOptions.headers,
           method: requestOptions.method,
           stringifyBody: responseOptions.stringifyBody,
         },

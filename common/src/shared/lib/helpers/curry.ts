@@ -13,9 +13,8 @@ type Head<A extends Array<any>> = A extends [infer H] ? H : A extends [infer H, 
 type Length<T extends Array<any>> = T['length'];
 
 // Drop N entries from array T
-type Drop<N extends number, T extends Array<any>, I extends Array<any> = []> = Length<I> extends N
-  ? T
-  : Drop<N, Tail<T>, Prepend<Head<T>, I>>;
+type Drop<N extends number, T extends Array<any>, I extends Array<any> = []> =
+  Length<I> extends N ? T : Drop<N, Tail<T>, Prepend<Head<T>, I>>;
 
 // Use type X if X is assignable to Y, otherwise Y
 type Cast<X, Y> = X extends Y ? X : Y;

@@ -4470,10 +4470,10 @@ listr2@^4.0.1:
     through "^2.3.8"
     wrap-ansi "^7.0.0"
 
-lkree-common-utils@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.npmjs.org/lkree-common-utils/-/lkree-common-utils-0.0.18.tgz#017a11b98ebbb292bac7aa8af79dd7193d793841"
-  integrity sha512-1KTrd38GpqM4A7iUH88UOG5AP0BJU2r6+Rx/Vj0+mDvxiCfDtdX3V0vNkXDcafK7v25pWXGhpqGFP0m1cVQywQ==
+lkree-common-utils@^0.0.45:
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/lkree-common-utils/-/lkree-common-utils-0.0.45.tgz#bba9376c40b6f74fa5f75834f0074069f500ff5d"
+  integrity sha512-56e3gOQVFkVuBf/ZEXEtZlN81BTJUJafslg8IVrCReaPuBR0pC/wJRZovxKochJk3i7I3SdFqEiIxseS8VAdNg==
   dependencies:
     lodash.camelcase "4.3.0"
     lodash.snakecase "4.1.1"

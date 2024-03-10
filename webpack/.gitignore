@@ -1,0 +1,13 @@
+node_modules
+
+npm-debug.log
+yarn-error.log
+
+dist
+build
+build-dev
+
+.vscode
+.idea
+.settings
+.vim-arsync

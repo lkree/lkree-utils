@@ -68,3 +68,6 @@ export const randomFromTo = (min: number, max: number) => Math.floor(Math.random
 
 export const insertIntoString = (str: string, insertions: Array<string | number>) =>
   insertions.reduce<string>((result, insert, index) => result.replaceAll(`{${index}}`, insert.toString()), str);
+
+export const capitalize = <T extends string>(str: T): Capitalize<T> =>
+  `${str[0].toUpperCase()}${str.slice(1, str.length)}` as Capitalize<T>;

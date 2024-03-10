@@ -12,5 +12,5 @@ if [ "$1" != "--skip-tests" ]; then
 fi
 
 rm -rf build &&
-cross-env NODE_ENV=production webpack --config ./webpack/webpackLibrary.config.js &&
+cross-env NODE_ENV=production webpack &&
 node ./tools/rewritePackageJson.js

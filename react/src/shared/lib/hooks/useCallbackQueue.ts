@@ -1,4 +1,4 @@
-import type { Noop } from 'lkree-common-utils/ts';
+import type { Noop } from 'lkree-common-utils/lib/ts';
 
 import { Queue } from '~/shared/lib/hooks/useQueue';
 
