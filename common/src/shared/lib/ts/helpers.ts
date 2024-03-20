@@ -2,7 +2,7 @@ export type Nullable<T> = T | null;
 
 export type Voidable<T> = T | undefined;
 
-export type AnyFunction = (...args: Array<any>) => any;
+export type AnyFunction = (...args: Array<any>) => any | PromiseLike<any>;
 
 export type NonVoidable<T extends Record<string, any>> = {
   [Key in keyof T]-?: T[Key];

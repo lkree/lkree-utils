@@ -1,7 +1,8 @@
-import { SECONDS_IN_MINUTE } from '~/shared/const';
+import { SECONDS_IN_HOUR, SECONDS_IN_MINUTE } from '~/shared/const';
 import type { AnyFunction, Noop } from '~/shared/lib/ts';
 
 import { EMAIL_REGEX } from './const';
+import { isPromise } from './typeGuards';
 
 export const randomId = () => Math.floor(Math.random() * Date.now()).toString(16);
 
@@ -27,16 +28,32 @@ export const createPromise = <T = void>() => {
 
 export const deepClone = <T>(d: T): T => JSON.parse(JSON.stringify(d));
 
-export const formatDate = (value: number) => {
+const getValuesFormFormatTime = (value: number) => {
   const mathFn = value >= 0 ? 'floor' : 'ceil';
-  const seconds = Math[mathFn](value % SECONDS_IN_MINUTE);
+  const hours = Math[mathFn](value / SECONDS_IN_HOUR);
   const minutes = Math[mathFn]((value / SECONDS_IN_MINUTE) % SECONDS_IN_MINUTE);
-  // const hours = Math[mathFn](value / SECONDS_IN_HOUR);
-  // const sign = minutes < 0 || hours < 0 ? '- ' : '';
+  const seconds = Math[mathFn](value % SECONDS_IN_MINUTE);
+
+  return {
+    hours,
+    mathFn,
+    minutes,
+    seconds,
+    sign: minutes < 0 || hours < 0 ? '- ' : '',
+  };
+};
+
+export const formatTimeWithHours = (value: number) => {
+  const { hours, sign } = getValuesFormFormatTime(value);
+  const stringHours = `${Math.abs(hours)}`;
+
+  return `${sign}${stringHours.length === 1 ? '0' + stringHours : stringHours}:${formatDate(value)}`;
+};
+
+export const formatDate = (value: number) => {
+  const { minutes, seconds } = getValuesFormFormatTime(value);
   const stringSeconds = `${Math.abs(seconds)}`;
   const stringMinutes = `${Math.abs(minutes)}`;
-  // const stringHours = `${Math.abs(hours)}`;
-  // ${sign}${stringHours.length === 1 ? '0' + stringHours : stringHours} :
 
   return `${stringMinutes.length === 1 ? '0' + stringMinutes : stringMinutes}:${
     stringSeconds.length === 1 ? '0' + stringSeconds : stringSeconds
@@ -71,3 +88,29 @@ export const insertIntoString = (str: string, insertions: Array<string | number>
 
 export const capitalize = <T extends string>(str: T): Capitalize<T> =>
   `${str[0].toUpperCase()}${str.slice(1, str.length)}` as Capitalize<T>;
+
+export const callIndependentlyAfter = <T extends any | PromiseLike<any>>(fnResult: T, callback: AnyFunction): T => {
+  if (isPromise(fnResult)) return fnResult.then(callback).then(() => fnResult) as T;
+
+  callback();
+
+  return fnResult;
+};
+
+export const handleError = <T extends AnyFunction>(
+  fn: T,
+  onError: <T extends Error>(e: T) => any | Promise<any>
+): ReturnType<T> => {
+  let fnResult: ReturnType<T>[number];
+
+  try {
+    fnResult = fn();
+
+    if (isPromise(fnResult)) return (fnResult as Promise<ReturnType<T>>).catch(onError) as ReturnType<T>;
+  } catch (e) {
+    onError(e as Error);
+  }
+
+  // @ts-expect-error
+  return fnResult;
+};

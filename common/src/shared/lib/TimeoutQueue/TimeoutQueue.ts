@@ -1,6 +1,5 @@
-import type { AnyFunction } from 'lkree-common-utils/ts';
-
 import { Queue } from '~/shared/lib/Queue';
+import type { AnyFunction } from '~/shared/lib/ts';
 
 export class TimeoutQueue extends Queue<AnyFunction> {
   private _isExecution = false;

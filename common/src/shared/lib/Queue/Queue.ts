@@ -11,6 +11,10 @@ export interface IQueue<T> {
 export class Queue<T> implements IQueue<T> {
   private _queue = [] as Array<T>;
 
+  forEach(callback: (element: T, index: number) => any) {
+    this._queue.forEach(callback);
+  }
+
   get() {
     return this._queue[0];
   }

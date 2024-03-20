@@ -1,4 +1,4 @@
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname } from 'path';
 
 export const computeWebSocketSendData = (d: string | number | boolean | object | symbol | []) => JSON.stringify(d);
 

@@ -1,4 +1,4 @@
-import type { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
 
 type SubscribeEvent = string;
 type SubscribeFunction = (e: any) => void;

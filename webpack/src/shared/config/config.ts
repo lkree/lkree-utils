@@ -43,7 +43,6 @@ export const createBaseConfig = ({ entry, modeEnv, outputPath, webpackAliases, .
 
 export const createLibraryConfig = ({ entry, modeEnv, outputPath, webpackAliases, ...rest }: Props) =>
   createBaseConfig({
-    ...rest,
     entry,
     experiments: {
       outputModule: true,

@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { defaultDecorator, makeClassDecorator, makeMethodDecorator } from 'lkree-common-utils/lib/decorators';
 import { computePathWithDomain } from 'lkree-node-utils/api';
-import { defaultDecorator, makeClassDecorator, makeMethodDecorator } from 'lkree-node-utils/lib/decorators';
 
 export const API_DOMAIN = 'api';
 

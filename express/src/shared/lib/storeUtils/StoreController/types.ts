@@ -1,4 +1,4 @@
-import type { Nullable } from 'lkree-common-utils/ts';
+import type { Nullable } from 'lkree-common-utils/lib/ts';
 import type { AnyAction, Unsubscribe } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 

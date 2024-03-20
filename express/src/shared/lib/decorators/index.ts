@@ -1,8 +1,6 @@
-export { emit, positiveResponse } from './method';
+export { emptyResponse } from './method';
 export {
   API_DOMAIN,
-  bind,
-  catchable,
   del,
   FULL_VALUE,
   get,

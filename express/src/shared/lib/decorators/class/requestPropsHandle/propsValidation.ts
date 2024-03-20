@@ -1,4 +1,4 @@
-import { isObject } from 'lkree-common-utils/helpers';
+import { isObject } from 'lkree-common-utils/lib/helpers';
 
 import { FULL_VALUE } from './const';
 import type { OnNoDataPassedCallback, ValidationObject } from './types';

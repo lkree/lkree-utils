@@ -1,4 +1,4 @@
-import type { AnyFunction } from 'lkree-common-utils/ts';
+import type { AnyFunction } from '~/shared/lib/ts';
 
 type DecoratorMethodCallback<T extends AnyFunction> = (
   this: any,
@@ -23,8 +23,8 @@ export const makeMethodDecorator = <T extends AnyFunction>(
 
     const originalFunction: T = descriptor.value;
 
-    descriptor.value = async function (this: any, ...reqProps: Parameters<T>) {
-      return await decoratorCallback.call(this, originalFunction, ...reqProps);
+    descriptor.value = function (this: any, ...reqProps: Parameters<T>) {
+      return decoratorCallback.call(this, originalFunction, ...reqProps);
     };
   };
 };

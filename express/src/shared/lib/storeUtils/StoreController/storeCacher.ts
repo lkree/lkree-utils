@@ -1,4 +1,4 @@
-import type { AnyFunction } from 'lkree-common-utils/ts';
+import type { AnyFunction } from 'lkree-common-utils/lib/ts';
 
 import type { Cache } from './types';
 

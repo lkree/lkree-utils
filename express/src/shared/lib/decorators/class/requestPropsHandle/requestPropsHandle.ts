@@ -1,6 +1,6 @@
 import type { RequestParamHandler } from 'express';
-import { isObject } from 'lkree-common-utils/helpers';
-import { makeMethodDecorator } from 'lkree-node-utils/lib/decorators';
+import { makeMethodDecorator } from 'lkree-common-utils/lib/decorators';
+import { isObject } from 'lkree-common-utils/lib/helpers';
 
 import { assert } from './asserts';
 import { RequestDataFields, DEFAULT_FIELD_TO_DATA_EXECUTE } from './const';
@@ -10,7 +10,7 @@ import type { Cookies, OnInvalidData, OnNoDataPassedCallback, Settings } from '.
 export const requestPropsHandle =
   (onNoDataPassed: OnNoDataPassedCallback, onInvalidData: OnInvalidData) =>
   <T, K extends RequestDataFields = RequestDataFields.Body, C = Cookies>(settings: Settings<T, K, C>) =>
-    makeMethodDecorator<RequestParamHandler>(async function (originalFn, req, res, next, ...rest) {
+    makeMethodDecorator<RequestParamHandler>(async function (originalFn, req, res, ...rest) {
       if (settings.validate) {
         settings.validate.forEach(({ fieldToExecuteData = DEFAULT_FIELD_TO_DATA_EXECUTE, validationObject }) =>
           propsValidation(onNoDataPassed, onInvalidData, validationObject, req[fieldToExecuteData as never])
@@ -35,5 +35,5 @@ export const requestPropsHandle =
         }
       }
 
-      return await originalFn.call(this, req, res, next, ...rest);
+      return await originalFn.call(this, req, res, ...rest);
     });
