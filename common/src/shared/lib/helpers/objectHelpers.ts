@@ -1,7 +1,38 @@
+import { Nullable, Voidable } from '~/shared/lib/ts';
+
 import { alphabeticSortHelper, removeWhiteSpaces } from './common';
 import { isArray, isDate, isNumber, isObject, isPrimitive, isString } from './typeGuards';
 
 const forEachTypeGuards = { isArray, isObject, isPrimitive };
+
+export type Paths<T> =
+  T extends Array<infer U>
+    ? `${Paths<U>}`
+    : T extends object
+      ? {
+          [K in keyof T]: K extends string ? `${K}` | `${K}.${Paths<T[K]>}` : never;
+        }[keyof T]
+      : never;
+
+export type GetObjectFieldValue<T, K extends string> = T extends object
+  ? {
+      [Key in keyof T]: Key extends string
+        ? `${K}` extends `${Key}.${infer S}`
+          ? GetObjectFieldValue<T[Key], S>
+          : `${K}` extends `${Key}`
+            ? T[Key]
+            : never
+        : never;
+    }[keyof T]
+  : never;
+
+export const getObjectFieldValue = <T extends Voidable<Nullable<object>>, S extends string>(
+  object: T,
+  path: Paths<T> & S
+): GetObjectFieldValue<T, S> =>
+  path
+    .split('.')
+    .reduce((result, pathPart) => (result as object)?.[pathPart as keyof object], object) as GetObjectFieldValue<T, S>;
 
 export const excludeDataFromObject = <T extends Record<string, any>, K extends Array<keyof T>>(
   data: T,
@@ -118,3 +149,21 @@ export const getNonFalsyObject = <T extends Record<string, any>>(d: T) =>
 
     return r;
   }, {} as T);
+
+export const assignObject = <T extends Record<string, any>>(a: T, b: T) => {
+  Object.assign(a, b);
+
+  if (Array.isArray(b)) {
+    for (const value of b) {
+      if (!isPrimitive(value)) assignObject(value, value);
+    }
+  } else {
+    for (const key in b) {
+      if (!isPrimitive(b[key]) && Object.prototype.hasOwnProperty.call(b, key)) {
+        assignObject(b[key], a[key]);
+      }
+    }
+  }
+
+  return a;
+};

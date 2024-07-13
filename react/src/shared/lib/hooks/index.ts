@@ -1,4 +1,5 @@
 export * from './useGroupReady';
+export * from './useTimeoutedShow';
 export * from './useShow';
 export * from './usePrev';
 export * from './useCallbackQueue';

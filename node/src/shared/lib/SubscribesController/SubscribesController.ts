@@ -1,9 +1,8 @@
 import type { EventEmitter } from 'node:events';
 
-type SubscribeEvent = string;
 type SubscribeFunction = (e: any) => void;
 export type SubscribeList = Array<{
-  event: SubscribeEvent;
+  event: string;
   listener: SubscribeFunction;
   subscriptionType?: 'on' | 'once';
   emitter: EventEmitter;

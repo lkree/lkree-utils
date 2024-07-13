@@ -114,3 +114,13 @@ export const handleError = <T extends AnyFunction>(
   // @ts-expect-error
   return fnResult;
 };
+
+export const debounce = <T extends AnyFunction>(cb: T, timeout: number) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => cb(...args), timeout);
+  };
+};

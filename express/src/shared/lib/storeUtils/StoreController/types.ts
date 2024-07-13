@@ -1,5 +1,5 @@
 import type { Nullable } from 'lkree-common-utils/lib/ts';
-import type { AnyAction, Unsubscribe } from 'redux';
+import type { UnknownAction, Unsubscribe } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 
 import type { DefaultRootState, Store } from '../types';
@@ -33,15 +33,16 @@ export type EqualityMethods = Record<
 >;
 
 export type GetSubscribeMethods = (
-  props: { equal: (state: DefaultRootState) => boolean; options?: { once?: boolean } },
-  equalityMethod: keyof EqualityMethods
+  equalityMethod: keyof EqualityMethods,
+  equal: (state: DefaultRootState) => boolean,
+  options?: { once?: boolean }
 ) => SubscribeMethods;
 
 export type StoreController = Record<
   StoreControllerMethod,
   (equal: StateChecker, options?: StoreControllerOptions) => SubscribeMethods
 > & {
-  thunkDispatch: ThunkDispatch<DefaultRootState, any, AnyAction>;
+  thunkDispatch: ThunkDispatch<DefaultRootState, any, UnknownAction>;
   getStore: () => Store;
   setStore: (Store: Store) => void;
 };

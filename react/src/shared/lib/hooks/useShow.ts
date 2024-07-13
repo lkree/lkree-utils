@@ -1,23 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { useIsMounted } from './useIsMounted';
+import { useImmutable } from './useImmutable';
 
-export const useShow = (showTime: number, ...dependencies: Array<unknown>) => {
-  const { 0: show, 1: setShow } = useState(false);
+export const useShow = (initialState = false) => {
+  const { 0: isShow, 1: setIsHow } = useState(initialState);
 
-  const isMounted = useIsMounted();
-
-  useEffect(() => {
-    if (!isMounted) return;
-
-    setShow(true);
-
-    const id = setTimeout(() => {
-      setShow(false);
-    }, showTime);
-
-    return () => id && clearTimeout(id);
-  }, dependencies);
-
-  return show;
+  return {
+    hide: useImmutable(() => setIsHow(false)),
+    isShow,
+    show: useImmutable(() => setIsHow(true)),
+  };
 };

@@ -1,4 +1,4 @@
-import type { AnyAction } from 'redux';
+import type { UnknownAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 
 import type { DefaultRootState, Store } from '../types';
@@ -33,11 +33,12 @@ const equalityMethods: EqualityMethods = {
 };
 
 const getSubscribeMethods: GetSubscribeMethods = (
-  { equal, options = defaultSubscribeOptions },
-  equalityMethod: keyof EqualityMethods
+  equalityMethod: keyof EqualityMethods,
+  equal,
+  options = defaultSubscribeOptions
 ): SubscribeMethods => ({
   [SubscribeMethod.call]: callback => {
-    const parameters = { ...defaultSubscribeOptions, ...options };
+    const parameters = options === defaultSubscribeOptions ? options : { ...defaultSubscribeOptions, ...options };
     const onStoreFire = storeCacher(equalityMethods[equalityMethod](equal, callback));
 
     const unsubscribe = storeController.getStore().subscribe(() => onStoreFire() && parameters.once && unsubscribe());
@@ -46,14 +47,14 @@ const getSubscribeMethods: GetSubscribeMethods = (
   },
 });
 
-const thunkDispatch: ThunkDispatch<DefaultRootState, any, AnyAction> = (
-  ...props: Parameters<ThunkDispatch<DefaultRootState, any, AnyAction>>
-) => (storeController.getStore().dispatch as ThunkDispatch<DefaultRootState, any, AnyAction>)(...props);
+const thunkDispatch: ThunkDispatch<DefaultRootState, any, UnknownAction> = (
+  ...props: Parameters<ThunkDispatch<DefaultRootState, any, UnknownAction>>
+) => (storeController.getStore().dispatch as ThunkDispatch<DefaultRootState, any, UnknownAction>)(...props);
 
 export const storeController: StoreController = {
   getStore: (): Store => globalThis.store,
   setStore: store => (globalThis.store = store),
   thunkDispatch,
-  whenStateChange: (equal, options) => getSubscribeMethods({ equal, options }, EqualityMethod.change),
-  whenStateEqual: (equal, options) => getSubscribeMethods({ equal, options }, EqualityMethod.equal),
+  whenStateChange: (equal, options) => getSubscribeMethods(EqualityMethod.change, equal, options),
+  whenStateEqual: (equal, options) => getSubscribeMethods(EqualityMethod.equal, equal, options),
 };

@@ -3,6 +3,8 @@ import type { ToCamelCase } from '~/shared/lib/ts';
 
 import { computeHeaders, getJSONHeaders, toCamelCase } from './utils';
 
+const NO_CONTENT_CODE = 204;
+
 export enum BuiltInHeaders {
   JSON = 'json',
 }
@@ -65,7 +67,7 @@ export const createCall =
     const { options, resultType = ResultTypes.JSON, url } = reqInterceptor?.(props) ?? props;
 
     return fetchInstance(url, computeOptions(options))
-      .then(d => d[resultType]())
+      .then(d => (d.status === NO_CONTENT_CODE ? Promise.resolve() : d[resultType]()))
       .then(r => (isObject(r) || isArray(r) ? toCamelCase(r) : r))
       .then(r => resInterceptor?.(r) ?? r);
   };

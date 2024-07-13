@@ -1,4 +1,4 @@
-import type { Action as ReduxAction, AnyAction, Reducer as ReduxReducer, Store as BaseStore } from 'redux';
+import type { Action as ReduxAction, UnknownAction, Reducer as ReduxReducer, Store as BaseStore } from 'redux';
 import type { ThunkAction as ReduxThunkAction } from 'redux-thunk';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -31,18 +31,18 @@ export type ActionCreator<T extends string, K> = {
   type: T;
 };
 
-export type ReducerFunction<State, Actions extends AnyAction, Key extends Actions['type']> = (
+export type ReducerFunction<State, Actions extends UnknownAction, Key extends Actions['type']> = (
   state: State,
   action: Extract<Actions, { type: Key }>
 ) => State | void;
 
-export type ReducerMap<State, Actions extends AnyAction = AnyAction> = {
+export type ReducerMap<State, Actions extends UnknownAction = UnknownAction> = {
   [key in Actions['type']]: ReducerFunction<State, Actions, key>;
 };
 
-export type Reducer = <State, Actions extends AnyAction = AnyAction>(
+export type Reducer = <State, Actions extends UnknownAction = UnknownAction>(
   initialState: State,
   reducerMap: ReducerMap<State, Actions>
 ) => ReduxReducer<State, Actions>;
 
-export type CustomThunkAction<output> = ReduxThunkAction<output, DefaultRootState, void, AnyAction>;
+export type CustomThunkAction<output> = ReduxThunkAction<output, DefaultRootState, void, UnknownAction>;

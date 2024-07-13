@@ -5,14 +5,14 @@ export class BaseFileManager {
     return fs.readdir(path);
   }
 
-  async writeToFile(filePath: string, content: string) {
-    let a: FileHandle;
+  async writeToFile(filePath: string, content: string, flags = 'w+') {
+    let fileHandle: FileHandle;
 
     try {
-      a = await fs.open(filePath, 'w+');
-      await a.write(content);
+      fileHandle = await fs.open(filePath, flags);
+      await fileHandle.write(content);
     } finally {
-      await a!.close();
+      await fileHandle!.close();
     }
   }
 

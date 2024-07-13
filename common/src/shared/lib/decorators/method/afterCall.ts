@@ -7,8 +7,5 @@ export const afterCall = <T extends AnyFunction>(callback: T) =>
   makeMethodDecorator<T>(function (originalFn, ...rest) {
     const result = originalFn.apply(this, rest);
 
-    return callIndependentlyAfter(
-      result,
-      callIndependentlyAfter(callback(...rest), () => result)
-    );
+    return callIndependentlyAfter(result, () => callIndependentlyAfter(callback(...rest), () => result));
   });

@@ -1,2 +1,3 @@
 export * from './makeDecorator';
-export { bind } from './class';
+export { afterCall } from './method';
+export { bind, catchable } from './class';

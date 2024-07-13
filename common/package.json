@@ -1,7 +1,7 @@
 {
   "name": "lkree-common-utils",
   "type": "module",
-  "version": "0.0.62",
+  "version": "0.0.79",
   "license": "MIT",
   "files": [
     "./api",
