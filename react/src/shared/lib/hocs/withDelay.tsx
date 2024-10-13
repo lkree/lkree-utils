@@ -1,4 +1,4 @@
-import { useState, ComponentType, ComponentPropsWithoutRef, useLayoutEffect } from 'react';
+import { useState, type ComponentType, type ComponentPropsWithoutRef, useLayoutEffect } from 'react';
 
 import { useIsMounted, usePrev } from '~/shared/lib/hooks';
 
@@ -8,7 +8,7 @@ type AdditionalPropsToComponent = {
   closeEnds?: boolean;
 };
 
-type ComponentProps<T extends ComponentType> = Omit<ComponentPropsWithoutRef<T>, keyof AdditionalPropsToComponent>;
+type CompProps<T extends ComponentType> = Omit<ComponentPropsWithoutRef<T>, keyof AdditionalPropsToComponent>;
 
 interface HOCProps<T extends ComponentType> {
   closeDelay?: number;
@@ -16,14 +16,14 @@ interface HOCProps<T extends ComponentType> {
   notifyClosingStarted?: boolean;
   notifyOpeningEnded?: boolean;
   openDelay?: number;
-  openPropName: keyof ComponentProps<T>;
+  openPropName: keyof CompProps<T>;
 }
 
 interface BaseComponent<T extends ComponentType> {
   baseComponent: T;
 }
 
-type DelayedProps<T extends ComponentType> = HOCProps<T> & ComponentProps<T> & BaseComponent<T>;
+type DelayedProps<T extends ComponentType> = HOCProps<T> & CompProps<T> & BaseComponent<T>;
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 0;
@@ -42,7 +42,7 @@ const Delayed = <T extends ComponentType>({
   const isMounted = useIsMounted();
   const { 0: openingProcessEnded, 1: setOpeningProcessEnded } = useState(false);
   const { 0: closingProcessStarted, 1: setClosingProcessStarted } = useState(false);
-  const externalShow = (props as unknown as ComponentProps<T>)[openPropName];
+  const externalShow = (props as unknown as CompProps<T>)[openPropName];
   const prevExternalShow = usePrev(externalShow);
 
   useLayoutEffect(() => {
@@ -99,5 +99,5 @@ const Delayed = <T extends ComponentType>({
 
 export const WithDelay =
   <T extends ComponentType<any>>(Component: T, HOCProps: HOCProps<T>) =>
-  (props: ComponentProps<T>) =>
+  (props: CompProps<T>) =>
     <Delayed {...props} {...HOCProps} baseComponent={Component} />;

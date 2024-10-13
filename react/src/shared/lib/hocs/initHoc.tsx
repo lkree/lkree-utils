@@ -10,12 +10,16 @@ interface BaseComponent<T extends ComponentType> {
   baseComponent: T;
 }
 
+type PassVoidProps<T> = T extends void ? object : T;
+
 type HOCWrapperProps<
   CompType extends ComponentType,
   HOCProps,
   AdditionalPropsToComponent,
   RequiredPropsToComponent
-> = HOCProps & ComponentProps<CompType, AdditionalPropsToComponent, RequiredPropsToComponent> & BaseComponent<CompType>;
+> = PassVoidProps<HOCProps> &
+  ComponentProps<CompType, AdditionalPropsToComponent, RequiredPropsToComponent> &
+  BaseComponent<CompType>;
 
 export const initHoc =
   <HOCProps, AdditionalPropsToComponent = object, RequiredPropsToComponent = object>(
@@ -23,4 +27,4 @@ export const initHoc =
   ) =>
   <T extends ComponentType<any>>(Component: T, HOCProps: HOCProps) =>
   (props: ComponentProps<T, AdditionalPropsToComponent, RequiredPropsToComponent>) =>
-    <HOCWrapper {...props} {...HOCProps} baseComponent={Component} />;
+    <HOCWrapper {...props} {...(HOCProps as PassVoidProps<HOCProps>)} baseComponent={Component} />;
