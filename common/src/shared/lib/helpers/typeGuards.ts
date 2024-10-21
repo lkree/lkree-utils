@@ -7,7 +7,7 @@ const PRIMITIVE_TYPES = ['string', 'number', 'boolean', 'bigint', 'symbol'];
 export const isNullUndefined = (d: unknown): d is null | undefined => d === null || d === undefined;
 
 export const isPrimitive = (d: unknown): d is string | number | boolean | bigint | symbol =>
-  Boolean(d && PRIMITIVE_TYPES.includes(typeof d));
+  Boolean(d !== null && d !== undefined && PRIMITIVE_TYPES.includes(typeof d));
 
 export const isDate = (d: unknown): d is Date => Boolean(isAnyObject(d) && d instanceof Date);
 

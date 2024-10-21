@@ -2,7 +2,7 @@ import { SECONDS_IN_HOUR, SECONDS_IN_MINUTE } from '~/shared/const';
 import type { AnyFunction, Noop } from '~/shared/lib/ts';
 
 import { EMAIL_REGEX } from './const';
-import { isPromise } from './typeGuards';
+import { isFunction, isPromise } from './typeGuards';
 
 export const randomId = () => Math.floor(Math.random() * Date.now()).toString(16);
 
@@ -123,4 +123,38 @@ export const debounce = <T extends AnyFunction>(cb: T, timeout: number) => {
 
     timeoutId = setTimeout(() => cb(...args), timeout);
   };
+};
+
+type ChainInstanceWrappable = Record<string | symbol, any>;
+
+type ChainInstanceWrapped<out T extends ChainInstanceWrappable> = {
+  [Key in keyof T]: T[Key] extends AnyFunction
+    ? (
+        ...args: Parameters<T[Key]>
+      ) => [ReturnType<T[Key]>] extends [Promise<any>] ? Promise<ChainInstanceWrapped<T>> : ChainInstanceWrapped<T>
+    : T[Key];
+};
+
+type ChainInstanceWrapper = <T extends ChainInstanceWrappable>(wrapped: T) => ChainInstanceWrapped<T>;
+
+export const chainInstanceWrapper: ChainInstanceWrapper = s => {
+  return new Proxy(s, {
+    get: (initialInstance: typeof s, p: string | symbol, self: ChainInstanceWrapped<typeof s>) => {
+      if (!(p in initialInstance)) return;
+
+      const objectValue = initialInstance[p];
+
+      if (isFunction(objectValue)) {
+        return (...args: Parameters<typeof objectValue>) => {
+          const fnResult = objectValue(...args);
+
+          if (isPromise(fnResult)) return fnResult.then(() => self);
+
+          return self;
+        };
+      }
+
+      return objectValue;
+    },
+  });
 };

@@ -1,7 +1,7 @@
 {
   "name": "lkree-common-utils",
   "type": "module",
-  "version": "0.0.79",
+  "version": "0.0.82",
   "license": "MIT",
   "files": [
     "./api",
@@ -18,7 +18,9 @@
     "ts-check": "tsc -p tsconfig.json --noEmit",
     "eslint-test": "eslint {src,test}/**/*.{js,ts}"
   },
-  "repository": "https://github.com/lkree/lkree-utils/common",
+  "repository": {
+    "url": "https://github.com/lkree/lkree-utils/common"
+  },
   "devDependencies": {
     "@babel/core": "7.20.12",
     "@babel/plugin-proposal-nullish-coalescing-operator": "7.18.6",
